@@ -13,4 +13,14 @@ describe('Box (proxy)', function () {
     expect((await box.retrieve()).toString()).to.equal('42')
     expect(() => { box.increment() }).to.throw(TypeError)
   })
+
+  
+  it('should upgrades the implementation contract', async function () {
+    const BoxV2 = await ethers.getContractFactory("BoxV2")
+    box = await upgrades.upgradeProxy(box.address, BoxV2)
+    await box.increment()
+    let result = await box.retrieve()
+    expect(result).to.equal(43)
+  })
+  
 })
